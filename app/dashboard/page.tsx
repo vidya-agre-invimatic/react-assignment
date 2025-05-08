@@ -9,6 +9,7 @@ export default function DashboardPage() {
 
   useEffect(() => {
     const userData = localStorage.getItem("user")
+    console.log("User data from localStorage:", userData) // Debugging line
     if (userData) {
       setUser(JSON.parse(userData))
     }

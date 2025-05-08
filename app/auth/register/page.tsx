@@ -10,8 +10,8 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { useToast } from "@/components/ui/use-toast"
 import { Loader2 } from "lucide-react"
+import { toast } from "react-hot-toast"
 
 // Registration validation schema
 const RegisterSchema = Yup.object().shape({
@@ -30,21 +30,21 @@ const RegisterSchema = Yup.object().shape({
 export default function RegisterPage() {
   const { register } = useAuth()
   const router = useRouter()
-  const { toast } = useToast()
   const [isLoading, setIsLoading] = useState(false)
 
   const handleRegister = async (values: { firstName: string; lastName: string; email: string; password: string }) => {
     setIsLoading(true)
     try {
       await register(values.firstName, values.lastName, values.email, values.password)
-      localStorage.setItem("user", JSON.stringify(values)) // Debugging the response
       router.push("/dashboard")
+      toast.success("Account created successfully!")
     } catch (error: any) {
-      toast({
-        variant: "destructive",
-        title: "Registration failed",
-        description: error.message || "Please check your information and try again.",
-      })
+      console.error("Registration error:", error)
+
+      // Display error toast
+      toast.error(
+        error?.response?.data?.message || "An account with this email already exists. Please use a different email."
+      )
     } finally {
       setIsLoading(false)
     }

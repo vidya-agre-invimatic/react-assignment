@@ -32,18 +32,28 @@ api.interceptors.request.use(
 export const login = async (email: string, password: string): Promise<User> => {
   try {
     const response = await api.post("/auth/login", { email, password })
-    return {
-      id: response.data.id || response.data._id || "user-id",
-      firstName: response.data.firstName,
-      lastName: response.data.lastName,
-      email: response.data.email,
-      token: response.data.token,
+
+    const userData = response.data
+
+    // Create user object with token
+    const userWithToken = {
+      id: userData.id || userData._id || "user-id",
+      firstName: userData.firstName || userData.user?.firstName || "User",
+      lastName: userData.lastName || userData.user?.lastName || "",
+      email: userData.email || userData.user?.email || email,
+      token: userData.token,
     }
+    console.log("User data:", userWithToken) // Debugging line
+    // Save user to localStorage
+    localStorage.setItem("user", JSON.stringify(userWithToken))
+
+    // Set axios default headers with token
+    api.defaults.headers.common["Authorization"] = `Bearer ${userWithToken.token}`
+
+    return userWithToken
   } catch (error: any) {
-    if (error.response) {
-      throw new Error(error.response.data.message || "Login failed")
-    }
-    throw new Error("Network error. Please try again.")
+    const message = error.response?.data?.message || "Login failed"
+    throw new Error(message)
   }
 }
 

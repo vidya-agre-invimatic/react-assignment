@@ -3,17 +3,17 @@ import type { Metadata } from "next"
 import { Inter } from "next/font/google"
 import "./globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
-import { Toaster } from "@/components/ui/toaster"
 import { AuthProvider } from "@/lib/auth-provider"
 import { QueryProvider } from "@/lib/query-provider"
 import ErrorBoundary from "@/components/error-boundary"
+import { Toaster } from "react-hot-toast"
 
 const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
   title: "Second Brain",
   description: "Your second brain for productivity",
-    generator: 'v0.dev'
+  generator: "v0.dev",
 }
 
 export default function RootLayout({
@@ -29,7 +29,7 @@ export default function RootLayout({
             <AuthProvider>
               <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
                 {children}
-                <Toaster />
+                <Toaster position="top-right" reverseOrder={false} />
               </ThemeProvider>
             </AuthProvider>
           </QueryProvider>
